@@ -1,4 +1,13 @@
 {
+  "name": "nevmo-backend",
+  "version": "1.0.0",
+  "description": "Backend for the Nevmo payment system",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "dotenv": "^16.4.5",
