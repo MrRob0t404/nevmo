@@ -1,5 +1,9 @@
 const bcrypt = require("bcryptjs");
-const { createUser, findUserByUsername } = require("../models/userModel");
+const {
+  createUser,
+  findUserByUsername,
+  findUserById,
+} = require("../models/userModel");
 const { generateToken } = require("../utils/jwt");
 
 // Test method
@@ -10,6 +14,25 @@ const users = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({ message: "Server error", error });
+  }
+};
+
+// Get user details based on the token
+const getUserProfile = async (req, res) => {
+  try {
+    const userId = req.user.userId; // Extract the user ID from the JWT token
+
+    const user = await findUserById(userId);
+
+    return res.status(200).json({
+      user: {
+        username: user.username,
+        balance: user.balance,
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching user profile:", error);
+    return res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -36,7 +59,6 @@ const registerUser = async (req, res) => {
       username: username,
       password: hashedPassword,
     });
-    console.log("in try", user);
 
     // Generate JWT token
     const token = generateToken(user.id);
@@ -57,7 +79,6 @@ const registerUser = async (req, res) => {
  */
 const loginUser = async (req, res) => {
   const { username, password } = req.body;
-
   try {
     // Find user by username
     const user = await findUserByUsername(username);
@@ -87,4 +108,5 @@ module.exports = {
   registerUser,
   loginUser,
   users,
+  getUserProfile,
 };

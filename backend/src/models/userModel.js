@@ -13,7 +13,6 @@ const createUser = async (user) => {
   `;
   const values = [user.username, user.password, user.balance || 0];
   const { rows } = await pool.query(query, values);
-  console.log("createUser", rows);
   return rows[0];
 };
 
@@ -30,7 +29,22 @@ const findUserByUsername = async (username) => {
   return rows[0];
 };
 
+/**
+ * Finds a user by user id.
+ * @param {number} id - The user's username.
+ * @returns {Promise<Object>} The found user or null.
+ */
+const findUserById = async (id) => {
+  console.log(typeof id);
+  const query = `
+  SELECT * FROM users WHERE id = $1;
+  `;
+  const { rows } = await pool.query(query, [id]);
+  return rows[0];
+};
+
 module.exports = {
   createUser,
   findUserByUsername,
+  findUserById,
 };

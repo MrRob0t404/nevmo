@@ -1,22 +1,25 @@
 const jwt = require("jsonwebtoken");
 
-// Middleware to protect routes
-const auth = (req, res, next) => {
-  const token = req.header("Authorization")?.split(" ")[1]; // Expect "Bearer <token>"
+// Middleware to verify the JWT token
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1];
 
   if (!token) {
     return res
       .status(401)
-      .json({ message: "Access denied. No token provided." });
+      .json({ message: "No token provided, authorization denied" });
   }
 
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET); // Use your JWT secret from env
-    req.user = decoded; // Add the decoded user info to the request
-    next();
-  } catch (err) {
-    res.status(400).json({ message: "Invalid token." });
-  }
+  // Verify the token
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) {
+      return res.status(403).json({ message: "Token is invalid" });
+    }
+
+    req.user = user; // Attach the decoded user info to the request object
+    next(); // Move to the next middleware/controller
+  });
 };
 
-module.exports = auth;
+module.exports = authenticateToken;
