@@ -2,6 +2,16 @@ const bcrypt = require("bcryptjs");
 const { createUser, findUserByEmail } = require("../models/userModel");
 const { generateToken } = require("../utils/jwt");
 
+const users = async (req, res) => {
+  try {
+    return res.status(201).json({
+      user: "THIS IS A TEST. ROUTES ARE WORKING FINE :)",
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Server error", error });
+  }
+};
+
 /**
  * Registers a new user.
  * @param {Object} req - Express request object.
@@ -71,4 +81,5 @@ const loginUser = async (req, res) => {
 module.exports = {
   registerUser,
   loginUser,
+  users,
 };
