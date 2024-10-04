@@ -17,19 +17,19 @@ const createUser = async (user) => {
 };
 
 /**
- * Finds a user by email.
- * @param {string} email - The user's email.
+ * Finds a user by username.
+ * @param {string} username - The user's username.
  * @returns {Promise<Object>} The found user or null.
  */
-const findUserByEmail = async (email) => {
+const findUserByUsername = async (username) => {
   const query = `
-    SELECT * FROM users WHERE email = $1;
+  SELECT * FROM users WHERE username = $1;
   `;
-  const { rows } = await pool.query(query, [email]);
+  const { rows } = await pool.query(query, [username]);
   return rows[0];
 };
 
 module.exports = {
   createUser,
-  findUserByEmail,
+  findUserByUsername,
 };
