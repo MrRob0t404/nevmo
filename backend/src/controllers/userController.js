@@ -2,7 +2,7 @@ const bcrypt = require("bcryptjs");
 const { createUser, findUserByUsername } = require("../models/userModel");
 const { generateToken } = require("../utils/jwt");
 
-// Test
+// Test method
 const users = async (req, res) => {
   try {
     return res.status(201).json({
@@ -19,11 +19,11 @@ const users = async (req, res) => {
  * @param {Object} res - Express response object.
  */
 const registerUser = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { username, password } = req.body;
 
   try {
     // Check if user already exists
-    const existingUser = await findUserByEmail(email);
+    const existingUser = await findUserByUsername(username);
     if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
@@ -32,13 +32,17 @@ const registerUser = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create a new user
-    const user = await createUser({ name, email, password: hashedPassword });
+    const user = await createUser({
+      username: username,
+      password: hashedPassword,
+    });
+    console.log("in try", user);
 
     // Generate JWT token
     const token = generateToken(user.id);
 
     return res.status(201).json({
-      user: { id: user.id, name: user.name, email: user.email },
+      user: { id: user.id, email: user.email },
       token,
     });
   } catch (error) {
@@ -63,7 +67,7 @@ const loginUser = async (req, res) => {
 
     // Compare passwords
     const isMatch = await bcrypt.compare(password, user.password);
-    if (isMatch) {
+    if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
