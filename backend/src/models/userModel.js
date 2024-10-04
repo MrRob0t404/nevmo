@@ -2,17 +2,18 @@ const pool = require("../config/db");
 
 /**
  * Creates a new user.
- * @param {Object} user - The user object with name, email, and password.
+ * @param {Object} user - The user object with username, password, and optional balance.
  * @returns {Promise<Object>} The created user.
  */
 const createUser = async (user) => {
   const query = `
-    INSERT INTO users (name, email, password, created_at)
-    VALUES ($1, $2, $3, NOW())
-    RETURNING id, name, email, created_at;
+  INSERT INTO users (username, password, balance, "createdAt", "updatedAt")
+  VALUES ($1, $2, $3, NOW(), NOW())
+  RETURNING id, username, balance, "createdAt";
   `;
-  const values = [user.name, user.email, user.password];
+  const values = [user.username, user.password, user.balance || 0];
   const { rows } = await pool.query(query, values);
+  console.log("createUser", rows);
   return rows[0];
 };
 
