@@ -2,6 +2,7 @@ const bcrypt = require("bcryptjs");
 const { createUser, findUserByEmail } = require("../models/userModel");
 const { generateToken } = require("../utils/jwt");
 
+// Test
 const users = async (req, res) => {
   try {
     return res.status(201).json({
