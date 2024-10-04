@@ -12,20 +12,21 @@ const Dashboard = () => {
         headers: { Authorization: `Bearer ${token}` },
       };
 
-      const userResponse = await axios.get("/api/user/me", config);
-      setUser(userResponse.data);
+      const userResponse = await axios.get("/api/users/me", config);
+      // console.log("DASHBOARD", userResponse);
+      setUser(userResponse.data.user);
 
-      const transactionResponse = await axios.get("/api/transactions", config);
-      setTransactions(transactionResponse.data);
+      // const transactionResponse = await axios.get("/api/transactions", config);
+      // setTransactions(transactionResponse.data);
     };
 
     fetchData();
   }, []);
-
+  const { username, balance } = user;
   return (
     <div>
-      <h2>Welcome, {user.email}</h2>
-      <h3>Balance: ${user.balance}</h3>
+      <h2>Welcome, {username}</h2>
+      <h3>Balance: ${balance}</h3>
       <h3>Your Transactions</h3>
       <ul>
         {transactions.map((transaction, index) => (
