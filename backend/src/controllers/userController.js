@@ -1,5 +1,5 @@
 const bcrypt = require("bcryptjs");
-const { createUser, findUserByEmail } = require("../models/userModel");
+const { createUser, findUserByUsername } = require("../models/userModel");
 const { generateToken } = require("../utils/jwt");
 
 // Test
@@ -52,18 +52,18 @@ const registerUser = async (req, res) => {
  * @param {Object} res - Express response object.
  */
 const loginUser = async (req, res) => {
-  const { email, password } = req.body;
+  const { username, password } = req.body;
 
   try {
-    // Find user by email
-    const user = await findUserByEmail(email);
+    // Find user by username
+    const user = await findUserByUsername(username);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
     // Compare passwords
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
+    if (isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
